@@ -2,14 +2,64 @@ syntax = "proto3";
 
 package myservice;
 
+// =====================================================
+// gRPC 4つの通信パターンを学ぶためのサービス定義
+// =====================================================
+
 service MyService {
+  // 1. Unary RPC（単項RPC）
+  //    最も基本的なパターン。1リクエスト → 1レスポンス。
+  //    HTTP の GET/POST に最も近いイメージ。
   rpc SayHello (HelloRequest) returns (HelloResponse);
+
+  // 2. Server Streaming RPC（サーバーストリーミング）
+  //    1リクエスト → 複数レスポンス（サーバーが逐次送信）。
+  //    大量データの段階的な配信や、リアルタイム通知に適している。
+  rpc ListUsers (ListUsersRequest) returns (stream UserResponse);
+
+  // 3. Client Streaming RPC（クライアントストリーミング）
+  //    複数リクエスト → 1レスポンス（クライアントが逐次送信）。
+  //    ファイルアップロードやバッチデータの送信に適している。
+  rpc RecordMessages (stream ChatMessage) returns (MessageSummary);
+
+  // 4. Bidirectional Streaming RPC（双方向ストリーミング）
+  //    複数リクエスト ↔ 複数レスポンス（双方が自由に送受信）。
+  //    リアルタイムチャットやゲームの通信に適している。
+  rpc Chat (stream ChatMessage) returns (stream ChatMessage);
 }
 
+// =====================================================
+// メッセージ定義
+// =====================================================
+
+// --- Unary RPC 用 ---
 message HelloRequest {
   string name = 1;
 }
 
 message HelloResponse {
   string message = 1;
+}
+
+// --- Server Streaming RPC 用 ---
+message ListUsersRequest {
+  // 取得するユーザー数の上限
+  int32 max_results = 1;
+}
+
+message UserResponse {
+  string id = 1;
+  string name = 2;
+  string email = 3;
+}
+
+// --- Client Streaming / Bidirectional 用 ---
+message ChatMessage {
+  string user = 1;
+  string text = 2;
+}
+
+message MessageSummary {
+  int32 message_count = 1;
+  string summary = 2;
 }
