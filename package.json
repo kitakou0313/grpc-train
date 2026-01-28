@@ -4,7 +4,8 @@
   "description": "gRPCの勉強",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "proto:gen": "mkdir -p src/generated && grpc_tools_node_protoc --js_out=import_style=commonjs,binary:src/generated --grpc_out=grpc_js:src/generated --ts_out=grpc_js:src/generated --proto_path=. service.proto"
   },
   "repository": {
     "type": "git",
