@@ -70,5 +70,8 @@ message Person {
 
 
 # 用語の整理
-- message
+- Message
     - データ構造の定義
+- Service
+    - Remote Procedure Callのinterface
+    - 上で定義したmessageを使って定義できる
