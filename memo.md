@@ -17,6 +17,9 @@
 
 # Protocol Buffersについて
 
+## 公式のdocs
+https://protobuf.dev/
+
 ## 概要
 - serialization formatの一種
 - 言語、プラットフォームに依存しない
@@ -63,6 +66,7 @@ message Person {
 ### 後方互換性
 - Protocol Buffers
     - 新しいfieldを追加した際の挙動
+    - 古いClientは自動で新しいfiledを無視する
 
 
 # 用語の整理
