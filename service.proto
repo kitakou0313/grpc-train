@@ -41,6 +41,11 @@ message HelloResponse {
   string message = 1;
 }
 
+message Comment {
+  string user_id = 1;
+  string contents = 2;
+}
+
 // --- Server Streaming RPC 用 ---
 message ListUsersRequest {
   // 取得するユーザー数の上限

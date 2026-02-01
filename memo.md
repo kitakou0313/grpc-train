@@ -18,7 +18,9 @@
 # Protocol Buffersについて
 
 ## 公式のdocs
-https://protobuf.dev/
+- https://protobuf.dev/
+- `.proto`ファイルのspecificationなど
+    - https://protobuf.dev/programming-guides/proto3/
 
 ## 概要
 - serialization formatの一種

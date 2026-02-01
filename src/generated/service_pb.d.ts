@@ -46,6 +46,29 @@ export namespace HelloResponse {
     }
 }
 
+export class Comment extends jspb.Message { 
+    getUserId(): string;
+    setUserId(value: string): Comment;
+    getContents(): string;
+    setContents(value: string): Comment;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): Comment.AsObject;
+    static toObject(includeInstance: boolean, msg: Comment): Comment.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: Comment, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): Comment;
+    static deserializeBinaryFromReader(message: Comment, reader: jspb.BinaryReader): Comment;
+}
+
+export namespace Comment {
+    export type AsObject = {
+        userId: string,
+        contents: string,
+    }
+}
+
 export class ListUsersRequest extends jspb.Message { 
     getMaxResults(): number;
     setMaxResults(value: number): ListUsersRequest;
