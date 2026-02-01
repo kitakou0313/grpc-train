@@ -5,14 +5,27 @@
     - シリアライズのフォーマット
     - デフォルトのInterface Definition Launguageとして利用している
 
-# どこで策定されているか
+## どこで策定されているか
 - gRPC自体
     - CNCF
     - grpc.io
 - Protocol BuffersはGoogle
 
-# 他技術との関連
+## 他技術との関連
 - HTTP2の上に構築されている
+
+## プログラミング言語からの利用方法
+### TypeScriptからの利用方法
+- `@grpc/grpc-js`が現在主流
+    - `grpc`はdepricated
+- 動的に`.proto`から生成する場合
+    - `@grpc/proto-loader`
+    - コードの実行時に生成
+- 静的に`.proto`から生成する場合
+    - `grpc_tools_node_protoc_ts`
+    - 事前に実装と型定義を生成
+        - 基本はこっちにするべき
+        - 動的生成はコンパイル時の方検証もできないため
 
 
 # Protocol Buffersについて
