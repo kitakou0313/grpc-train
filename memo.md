@@ -18,6 +18,9 @@
 ### TypeScriptからの利用方法
 - `@grpc/grpc-js`が現在主流
     - `grpc`はdepricated
+    - docs 
+        - https://grpc.github.io/grpc/node/grpc.html
+        - `grpc`のものだが、ほぼ同じinterfaceなので参考にして良い（一部違いはあるのでgithubを見る）
 - 動的に`.proto`から生成する場合
     - `@grpc/proto-loader`
     - コードの実行時に生成
