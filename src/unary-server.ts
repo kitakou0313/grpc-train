@@ -11,7 +11,9 @@ import {
 import { error } from "console";
 
 
- const myServiceImpl: IMyServiceServer = {
+const myServiceImpl: IMyServiceServer = {
+// Unary gRPC実装
+// 1リクエストに対して1レスポンスが返る
     sayHello: (
         call: grpc.ServerUnaryCall<HelloRequest, HelloResponse>,
         callback: grpc.sendUnaryData<HelloResponse>
@@ -26,30 +28,30 @@ import { error } from "console";
         callback(null, response);
         console.log(`[Unary] レスポンスを送信`)
     }
- }
+}
 
 
- function main() {
-    const server = new grpc.Server();
+function main() {
+const server = new grpc.Server();
 
-    // serviceとserverの定義は別々？
-    server.addService(MyServiceService, myServiceImpl)
+// serviceとserverの定義は別々？
+server.addService(MyServiceService, myServiceImpl)
 
-    const address = '0.0.0.0:50051'
+const address = '0.0.0.0:50051'
 
-    server.bindAsync(
-        address,
-        grpc.ServerCredentials.createInsecure(),
-        (error, port) => {
-            if (error) {
-                console.error(`サーバー起動エラー`, error)
-                return
-            }
-
-            console.log(`サーバー起動ずみ`)
+server.bindAsync(
+    address,
+    grpc.ServerCredentials.createInsecure(),
+    (error, port) => {
+        if (error) {
+            console.error(`サーバー起動エラー`, error)
+            return
         }
-    )
- }
+
+        console.log(`サーバー起動ずみ`)
+    }
+)
+}
 
 
- main()
+main()
