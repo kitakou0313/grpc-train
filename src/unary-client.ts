@@ -37,4 +37,13 @@ async function main() {
         'localhost:50051',
         grpc.credentials.createInsecure() // 開発用（本番では TLS を使用）
     );
+
+    try {
+        await demoUnaryGRPC(client);
+        await sleep(1000);
+    } finally {
+        client.close();
+    }
 }
+
+main()

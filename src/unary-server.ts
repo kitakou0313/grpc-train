@@ -10,6 +10,13 @@ import {
  } from "./generated/service_pb";
 import { error } from "console";
 
+const sampleUsersList = [
+    {id: '1', name: 'User1', email: 'user1@example.com'},
+    {id: '1', name: 'User1', email: 'user1@example.com'},
+    {id: '1', name: 'User1', email: 'user1@example.com'},
+    {id: '1', name: 'User1', email: 'user1@example.com'}
+
+]
 
 const myServiceImpl: IMyServiceServer = {
 // Unary gRPC実装
@@ -27,7 +34,39 @@ const myServiceImpl: IMyServiceServer = {
 
         callback(null, response);
         console.log(`[Unary] レスポンスを送信`)
+    },
+
+    // Server Streaming gRPC実装
+    // 1リクエスト受信 -> 複数レスポンス送信 -> 送信停止
+
+    listUsers: (
+        call: grpc.ServerWritableStream<ListUsersRequest, UserResponse>
+    ) => {
+        console.log('[Server Streaming] ListUsers is called')
+
+        const maxResults = call.request.getMaxResults();
+
+        const usersToSend = sampleUsersList.slice(0, maxResults);
+        let index = 0;
+        const intervalId = setInterval(() => {
+            if (index >= usersToSend.length){
+                clearInterval(intervalId);
+                // 送信停止
+                call.end();
+                return
+            }
+
+            const user = usersToSend[index];
+            const response = new UserResponse()
+            response.setId(user.id);
+            response.setName(user.name);
+            response.setEmail(user.email);
+
+            call.write(response);
+        })
+
     }
+
 }
 
 
