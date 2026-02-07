@@ -65,6 +65,39 @@ const myServiceImpl: IMyServiceServer = {
             call.write(response);
         })
 
+    },
+
+    // Client streaming gRPC実装
+    // Client側から複数メッセージ受信 -> 受信完了 -> 1レスポンスを返す
+    recordMessages: (
+        call: grpc.ServerReadableStream<ChatMessage, MessageSummary>,
+        callback: grpc.sendUnaryData<MessageSummary>
+    ) => {
+        console.log('[Client Streaming] RecordMessages')
+
+        const messages: string[] = []
+
+        // Clientからmessageを受信するたびに実行
+        call.on('data', (message: ChatMessage) => {
+            const user = message.getUser()
+            const text = message.getText()
+
+            const messageString = `${user}: ${text}`;
+            messages.push(messageString);
+            console.log(`[Client Streaming] 受信]: ${messageString}`)
+        })
+
+        call.on("end", () => {
+            const summary = new MessageSummary();
+            summary.setMessageCount(messages.length)
+            summary.setSummary(
+                messages.length > 0
+                    ? `受信したメッセージ:\n${messages.join('\n')}`
+                    : 'メッセージは受信されませんでした'
+                )
+            callback(null, summary);
+            }
+        )
     }
 
 }
