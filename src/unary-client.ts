@@ -5,7 +5,6 @@ import {
   ListUsersRequest,
   ChatMessage,
 } from './generated/service_pb';
-import { error } from 'console';
 
 function sleep(ms:number): Promise<void> {
     return new Promise(
@@ -31,6 +30,38 @@ async function demoUnaryGRPC(client: MyServiceClient): Promise<void> {
     })
 }
 
+// Server streaming
+// 1リクエスト -> 複数のレスポンス -> 送信停止
+// サーバーからの受信でイベントが発生するため、それに対応するハンドラを用意するイメージ
+async function demoServerStreamingRPC(client: MyServiceClient): Promise<void> {
+    console.log('[Client] Server Streaminig RPCß')
+
+    return new Promise((resolve, reject) => {
+        const request = new ListUsersRequest()
+        request.setMaxResults(3)
+
+        const call = client.listUsers(request)
+
+        call.on('data', (response) => {
+            console.log(`[Client] 受信: `, {
+                id: response.getId(),
+                name: response.getName(),
+                email: response.getEmail()
+            })
+        })
+
+        call.on('end', () => {
+            console.log('[Client] 送信終了')
+            resolve()
+        })
+
+        call.on('error', (error) => {
+            console.log('[Client] エラー発生')
+            reject(error)
+        })
+    })
+}
+
 async function main() {
     // サーバーに接続
     const client = new MyServiceClient(
@@ -40,6 +71,9 @@ async function main() {
 
     try {
         await demoUnaryGRPC(client);
+        await sleep(1000);
+
+        await demoServerStreamingRPC(client)
         await sleep(1000);
     } finally {
         client.close();
