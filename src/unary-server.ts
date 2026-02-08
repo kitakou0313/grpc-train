@@ -98,8 +98,38 @@ const myServiceImpl: IMyServiceServer = {
             callback(null, summary);
             }
         )
-    }
+    },
 
+    // 双方向ストリーミング
+    // 非同期に通信可能、順序に依存しない
+    // callというのがユーザーから来た着信 という意味っぽい
+    chat: (
+        call: grpc.ServerDuplexStream<ChatMessage, ChatMessage>
+    ) => {
+        console.log(`[Bidirectional]`)
+
+        call.on('data', (message: ChatMessage) => {
+            const user = message.getUser()
+            const text = message.getText()
+            console.log(`[Bidirectional] 受信: ${user} - ${text}`)
+        
+            const response = new ChatMessage();
+            response.setUser('Server')
+            response.setText(`Hello, ${user}`)
+
+            // call.writeでレスポンス送信
+            call.write(message)
+            console.log(`[Bidirectional] 送信: Server - 'Hello, ${user}'`)
+        })
+
+        call.on('end', () => {
+            const farewallMessage = new ChatMessage()
+            farewallMessage.setUser('Server')
+            farewallMessage.setText('GoodBye!')
+
+            call.write(farewallMessage)
+        })
+    }
 }
 
 
