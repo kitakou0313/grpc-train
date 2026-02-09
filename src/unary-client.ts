@@ -5,6 +5,8 @@ import {
   ListUsersRequest,
   ChatMessage,
 } from './generated/service_pb';
+import { resolve } from 'path';
+import { error } from 'console';
 
 function sleep(ms:number): Promise<void> {
     return new Promise(
@@ -59,6 +61,43 @@ async function demoServerStreamingRPC(client: MyServiceClient): Promise<void> {
             console.log('[Client] エラー発生')
             reject(error)
         })
+    })
+}
+
+// Client Streaming gRPC
+// Client側が複数送信
+async function demoClientStreamingRPC(client:MyServiceClient): Promise<void> {
+    
+    return new Promise((resolve, reject) => {
+        console.log(`[Client] Client Streaming送信`)
+
+        // Client Streamingの呼び出し
+        // 戻り値がWritableStreamになり、callbackで最終レスポンスを受け取った時の処理を定義
+        const stream = client.recordMessages((error, response) => {
+            if(error) {
+                console.error(`[Client] エラー:`, error.message)
+                reject(error)
+                return
+            }
+
+            console.log(`[Client] サーバーからのサマリー`, response.getSummary())
+            resolve()
+        })
+
+        const messages = [
+            {user: 'Alice', text: 'Hello!'},
+            {user: 'Bob', text: 'Hello!2'},
+            {user: 'Alice', text: 'Hello!3'},
+
+        ]
+        for (const message of messages) {
+            const chatMessage = new ChatMessage()
+            chatMessage.setUser(message.user)
+            chatMessage.setText(message.text)
+
+            stream.write(chatMessage)
+            console.log(`[Client] 送信: ${chatMessage.getUser()} - ${chatMessage.getText()}`)
+        }
     })
 }
 

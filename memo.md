@@ -57,6 +57,9 @@ message Person {
 
 1,2,3というのはfield indentification（シリアライズの時のfieldを識別するため）であり、デフォルト値ではない
 
+## Protocol Buffersの構文
+- streaming
+
 ## JSONなどに対する優位性
 
 ### 効率的なシリアライズ
