@@ -7,6 +7,7 @@ import {
 } from './generated/service_pb';
 import { resolve } from 'path';
 import { error } from 'console';
+import { constrainedMemory } from 'process';
 
 function sleep(ms:number): Promise<void> {
     return new Promise(
@@ -98,6 +99,44 @@ async function demoClientStreamingRPC(client:MyServiceClient): Promise<void> {
             stream.write(chatMessage)
             console.log(`[Client] 送信: ${chatMessage.getUser()} - ${chatMessage.getText()}`)
         }
+    })
+}
+
+// Bidirectional Streaming RPC
+async function demoBidirectionalStreamingRPC(client: MyServiceClient): Promise<void> {
+    
+    return new Promise((resolve, reject) => {
+        console.log('[Client] 双方向チャット開始...\n');
+        
+        // 双方向Streaming用のstreamを取得
+        const stream = client.chat()
+
+        // Serverからのメッセージ受信時の処理
+        // ハンドラを登録する形で受信時の処理を定義
+        stream.on("data", (response) => {
+            console.log(`[client]: 受信: ${response.getUser()} - ${response.getText()}`)
+        })
+        stream.on("end", () => {
+            console.log('[Client] チャット終了')
+            resolve()
+        })
+        stream.on("error", (error) => {
+            console.error('[Client] エラー:', error.message)
+            reject(error)
+        })
+
+        // Clientからのメッセージ送信時の処理
+        const messages = [
+            "Hello, Server! from Bidirectional Stream",
+        ]
+        for (const message of messages) {
+            const chatMessage = new ChatMessage();
+            chatMessage.setUser('ClientUser')
+            chatMessage.setText(message)
+
+            stream.write(chatMessage)
+        }
+
     })
 }
 
