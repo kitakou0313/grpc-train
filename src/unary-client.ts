@@ -5,9 +5,6 @@ import {
   ListUsersRequest,
   ChatMessage,
 } from './generated/service_pb';
-import { resolve } from 'path';
-import { error } from 'console';
-import { constrainedMemory } from 'process';
 
 function sleep(ms:number): Promise<void> {
     return new Promise(
@@ -152,6 +149,12 @@ async function main() {
         await sleep(1000);
 
         await demoServerStreamingRPC(client)
+        await sleep(1000);
+
+        await demoClientStreamingRPC(client)
+        await sleep(1000);
+
+        await demoBidirectionalStreamingRPC(client)
         await sleep(1000);
     } finally {
         client.close();

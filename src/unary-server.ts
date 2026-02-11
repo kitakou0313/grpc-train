@@ -45,26 +45,18 @@ const myServiceImpl: IMyServiceServer = {
         console.log('[Server Streaming] ListUsers is called')
 
         const maxResults = call.request.getMaxResults();
-
         const usersToSend = sampleUsersList.slice(0, maxResults);
-        let index = 0;
-        const intervalId = setInterval(() => {
-            if (index >= usersToSend.length){
-                clearInterval(intervalId);
-                // 送信停止
-                call.end();
-                return
-            }
-
-            const user = usersToSend[index];
+        for (const message of usersToSend) {
             const response = new UserResponse()
-            response.setId(user.id);
-            response.setName(user.name);
-            response.setEmail(user.email);
+            response.setId(message.id);
+            response.setName(message.name);
+            response.setEmail(message.email);
 
-            call.write(response);
-        })
+            call.write(response)
+        }
 
+        call.end();
+        console.log('[Server Streaming] 送信終了')
     },
 
     // Client streaming gRPC実装
