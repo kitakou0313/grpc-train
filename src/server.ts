@@ -166,8 +166,8 @@ const myServiceImpl: IMyServiceServer = {
       summary.setMessageCount(messages.length);
       summary.setSummary(
         messages.length > 0
-          ? `受信したメッセージ:\n${messages.join('\n')}`
-          : 'メッセージは受信されませんでした'
+          ? `[Client Streaming] 受信したメッセージ:\n${messages.join('\n')}`
+          : '[Client Streaming] メッセージは受信されませんでした'
       );
 
       callback(null, summary);
@@ -199,13 +199,13 @@ const myServiceImpl: IMyServiceServer = {
   chat: (
     call: grpc.ServerDuplexStream<ChatMessage, ChatMessage>
   ) => {
-    console.log('[Bidirectional] Chat が開始されました');
+    console.log('[Bidirectional Streaming] Chat が開始されました');
 
     // クライアントからメッセージを受信するたびに発火
     call.on('data', (message: ChatMessage) => {
       const user = message.getUser();
       const text = message.getText();
-      console.log(`[Bidirectional] 受信: ${user} - "${text}"`);
+      console.log(`[Bidirectional Streaming] 受信: ${user} - "${text}"`);
 
       // エコーバック + サーバーからの応答を送信
       const response = new ChatMessage();
@@ -213,12 +213,12 @@ const myServiceImpl: IMyServiceServer = {
       response.setText(`「${text}」を受け取りました！`);
 
       call.write(response);
-      console.log(`[Bidirectional] 送信: サーバー - "${response.getText()}"`);
+      console.log(`[Bidirectional Streaming] 送信: サーバー - "${response.getText()}"`);
     });
 
     // クライアントが送信を終了した時
     call.on('end', () => {
-      console.log('[Bidirectional] クライアントが切断しました');
+      console.log('[Bidirectional Streaming] クライアントが切断しました');
 
       // 最後のメッセージを送信
       const farewell = new ChatMessage();
@@ -227,7 +227,7 @@ const myServiceImpl: IMyServiceServer = {
       call.write(farewell);
 
       call.end(); // サーバー側もストリームを終了
-      console.log('[Bidirectional] ストリーム終了\n');
+      console.log('[Bidirectional Streaming] ストリーム終了\n');
     });
   },
 };

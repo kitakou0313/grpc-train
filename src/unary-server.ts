@@ -76,7 +76,7 @@ const myServiceImpl: IMyServiceServer = {
 
             const messageString = `${user}: ${text}`;
             messages.push(messageString);
-            console.log(`[Client Streaming] 受信]: ${messageString}`)
+            console.log(`[Client Streaming] 受信: ${messageString}`)
         })
 
         call.on("end", () => {
@@ -84,8 +84,8 @@ const myServiceImpl: IMyServiceServer = {
             summary.setMessageCount(messages.length)
             summary.setSummary(
                 messages.length > 0
-                    ? `受信したメッセージ:\n${messages.join('\n')}`
-                    : 'メッセージは受信されませんでした'
+                    ? `[Client Streaming] 受信したメッセージ:\n${messages.join('\n')}`
+                    : '[Client Streaming] メッセージは受信されませんでした'
                 )
             callback(null, summary);
             }
@@ -98,12 +98,12 @@ const myServiceImpl: IMyServiceServer = {
     chat: (
         call: grpc.ServerDuplexStream<ChatMessage, ChatMessage>
     ) => {
-        console.log(`[Bidirectional]`)
+        console.log(`[Bidirectional Streaming] スタート`)
 
         call.on('data', (message: ChatMessage) => {
             const user = message.getUser()
             const text = message.getText()
-            console.log(`[Bidirectional] 受信: ${user} - ${text}`)
+            console.log(`[Bidirectional Streaming] 受信: ${user} - ${text}`)
         
             const response = new ChatMessage();
             response.setUser('Server')
@@ -111,7 +111,7 @@ const myServiceImpl: IMyServiceServer = {
 
             // call.writeでレスポンス送信
             call.write(message)
-            console.log(`[Bidirectional] 送信: Server - 'Hello, ${user}'`)
+            console.log(`[Bidirectional Streaming] 送信: Server - 'Hello, ${user}'`)
         })
 
         call.on('end', () => {
