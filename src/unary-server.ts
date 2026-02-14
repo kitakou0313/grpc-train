@@ -8,13 +8,12 @@ import {
     ChatMessage,
     MessageSummary
  } from "./generated/service_pb";
-import { error } from "console";
 
 const sampleUsersList = [
     {id: '1', name: 'User1', email: 'user1@example.com'},
-    {id: '1', name: 'User1', email: 'user1@example.com'},
-    {id: '1', name: 'User1', email: 'user1@example.com'},
-    {id: '1', name: 'User1', email: 'user1@example.com'}
+    {id: '2', name: 'User2', email: 'user2@example.com'},
+    {id: '3', name: 'User3', email: 'user3@example.com'},
+    {id: '4', name: 'User4', email: 'user4@example.com'}
 
 ]
 
